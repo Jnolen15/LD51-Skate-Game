@@ -24,8 +24,11 @@ public class ParallaxBackground : MonoBehaviour
         var ymov = 0f;
         if (pc.curSpeed > 0.1)
             xmov = -(pc.curSpeed * Time.deltaTime);
-        //if (pc.curJump < -0.1 || pc.curJump > 0.1) // Fix jumping to be velocity or make this adjusted based on 1 instead of 0
-        //    ymov = pc.curJump * Time.deltaTime;
+        if (pc.curJump < -0.1 || pc.curJump > 0.1)
+        {
+            var diff = ((pc.jumpVel) - (pc.gravity))/2;
+            ymov = -(diff * Time.deltaTime);
+        }
 
         transform.position += new Vector3(xmov * parallaxMult.x, ymov * parallaxMult.y, 0);
 

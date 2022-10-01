@@ -19,8 +19,9 @@ public class PlayerControler : MonoBehaviour
     [SerializeField] private float topSpeed;
     [SerializeField] private float drag;
     [SerializeField] private float topJump;
-    [SerializeField] private float gravity;
+    public float gravity;
     public float curSpeed;
+    public float jumpVel;
     public float curJump;
 
     void Update()
@@ -62,19 +63,34 @@ public class PlayerControler : MonoBehaviour
         // Speed and Jump dampening
         if (curSpeed >= 0)
         {
-            curSpeed -= drag * Time.deltaTime;
+            var adjustedDrag = (drag * (((topSpeed + 1) - curSpeed)/8));
+            curSpeed -= adjustedDrag * Time.deltaTime;
         }
-        if (curJump >= 0)
+        if (curJump > 0.1)
         {
             curJump -= gravity * Time.deltaTime;
+        } else
+        {
+            curJump = 0;
         }
 
         // Jumping
-        spriteObj.transform.localPosition = new Vector3(0, curJump, 0);
-        if (curJump <= 0)
+        if (jumpVel > 0)
+        {
+            curJump += jumpVel * Time.deltaTime;
+            jumpVel -= gravity * Time.deltaTime;
+        }
+
+        spriteObj.transform.localPosition = new Vector3(0, curJump/2, 0);
+        if (curJump <= 0.1)
+        {
             grounded = true;
+            jumpVel = 0;
+        }
         else
+        {
             grounded = false;
+        }
     }
 
     private void DecideMove()
@@ -99,14 +115,15 @@ public class PlayerControler : MonoBehaviour
                     break;
                 case "dr":
                     Debug.Log("Ollie");
-                    ExecuteMove(-0.6f, 2);
+                    ExecuteMove(0, 15);
                     break;
                 case "dl":
                     Debug.Log("Nollie");
-                    ExecuteMove(-0.6f, 2);
+                    ExecuteMove(0, 15);
                     break;
                 default:
                     Debug.Log("Fumbled");
+                    ExecuteMove(-5, 0);
                     break;
             }
         } else
@@ -123,6 +140,7 @@ public class PlayerControler : MonoBehaviour
                     break;
                 default:
                     Debug.Log("Fumbled");
+                    ExecuteMove(-3, 0);
                     break;
             }
         }
@@ -135,9 +153,24 @@ public class PlayerControler : MonoBehaviour
     {
         // adjustspeed and jump
         if (curSpeed < topSpeed)
-            curSpeed += speedInc;
-        if (curJump < topJump)
-            curJump += jumpInc;
+        {
+            //Debug.Log("Boosting speed by " + (speedInc * (1 + curSpeed / 10)));
+            if(speedInc > 0)
+            {
+                // This makes it so you gain more speed when pushing and already moving fast
+                curSpeed += (speedInc * (1 + curSpeed / 10));
+                if (curSpeed > topSpeed) curSpeed = topSpeed;
+            } else
+            {
+                curSpeed += speedInc;
+            }
+        }
+        if (curJump < topJump && jumpInc > 0.1f)
+        {
+            //Debug.Log("Boosting jump by " + (jumpInc * (1 + curSpeed / 100)));
+            jumpVel += (jumpInc * (1 + curSpeed / 100));
+            curJump += 0.2f;
+        }
 
         // Make sure speed won't go negitive
         if (curSpeed <= 0)
