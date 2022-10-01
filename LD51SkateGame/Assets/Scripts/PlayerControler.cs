@@ -7,6 +7,7 @@ public class PlayerControler : MonoBehaviour
     [Header("Components")]
     [SerializeField] private GameObject spriteObj;
     [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private Animator animator;
     [SerializeField] private float yOffset;
 
     [Header("Inputs")]
@@ -50,7 +51,7 @@ public class PlayerControler : MonoBehaviour
         {
             inputHappening = false;
             inputBufferTimer = 0;
-            if (Input.GetKeyDown(KeyCode.DownArrow))
+            if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
             {
                 Debug.Log("Boosted");
                 hitTimer = 0;
@@ -63,7 +64,7 @@ public class PlayerControler : MonoBehaviour
         {
             inputHappening = false;
             inputBufferTimer = 0;
-            if (Input.GetKeyDown(KeyCode.DownArrow))
+            if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
             {
                 Debug.Log("Grind!");
                 onRail = true;
@@ -73,22 +74,22 @@ public class PlayerControler : MonoBehaviour
         // Input recording
         else
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow))
+            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
             {
                 inputHappening = true;
                 inputs.Add('u');
             }
-            if (Input.GetKeyDown(KeyCode.DownArrow))
+            if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
             {
                 inputHappening = true;
                 inputs.Add('d');
             }
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
             {
                 inputHappening = true;
                 inputs.Add('l');
             }
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+            if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
             {
                 inputHappening = true;
                 inputs.Add('r');
@@ -112,10 +113,23 @@ public class PlayerControler : MonoBehaviour
         }
 
         // Speed
-        if (curSpeed >= 0)
+        if (curSpeed > 0)
         {
             var adjustedDrag = (drag * (((topSpeed + 1) - curSpeed)/8));
             curSpeed -= adjustedDrag * Time.deltaTime;
+        } else
+        {
+            curSpeed = 0;
+        }
+
+        // Update animation based on speed
+        if (curSpeed >= 5)
+        {
+            animator.SetBool("GoingFast", true);
+        }
+        else
+        {
+            animator.SetBool("GoingFast", false);
         }
 
         // Jumping
@@ -146,15 +160,21 @@ public class PlayerControler : MonoBehaviour
         // Grounded test
         if (curJump <= 0.1)
         {
+            animator.SetBool("InAir", false);
+            animator.SetBool("InGrind", false);
             grounded = true;
             jumpVel = 0;
         }
         else if (onRail)
         {
+            animator.SetBool("InGrind", true);
+            animator.SetBool("InAir", false);
             grounded = true;
         }
         else
         {
+            animator.SetBool("InAir", true);
+            animator.SetBool("InGrind", false);
             grounded = false;
         }
     }
@@ -199,11 +219,18 @@ public class PlayerControler : MonoBehaviour
         {
             switch (movelist)
             {
+                case "d":
+                    hitRail = false;
+                    onRail = false;
+                    Debug.Log("Left Rail");
+                    ExecuteMove(2, 0);
+                    break;
                 case "dr":
                     Debug.Log("Ollie");
                     hitRail = false;
                     onRail = false;
                     Debug.Log("Left Rail");
+                    animator.SetTrigger("Ollie");
                     ExecuteMove(0, 13);
                     break;
                 case "dl":
@@ -211,6 +238,7 @@ public class PlayerControler : MonoBehaviour
                     hitRail = false;
                     onRail = false;
                     Debug.Log("Left Rail");
+                    animator.SetTrigger("Nollie");
                     ExecuteMove(0, 13);
                     break;
                 default:
@@ -228,14 +256,17 @@ public class PlayerControler : MonoBehaviour
             {
                 case "d":
                     Debug.Log("Pushed");
+                    animator.SetTrigger("Push");
                     ExecuteMove(3, 0);
                     break;
                 case "dr":
                     Debug.Log("Ollie");
+                    animator.SetTrigger("Ollie");
                     ExecuteMove(0, 15);
                     break;
                 case "dl":
                     Debug.Log("Nollie");
+                    animator.SetTrigger("Nollie");
                     ExecuteMove(0, 15);
                     break;
                 default:
@@ -247,12 +278,18 @@ public class PlayerControler : MonoBehaviour
         {
             switch (movelist)
             {
+
+                case "d":
+                    Debug.Log("nothing");
+                    break;
                 case "rl":
                     Debug.Log("Spin");
+                    animator.SetTrigger("BoardSpin");
                     ExecuteMove(0.2f, 0);
                     break;
                 case "lr":
                     Debug.Log("Inverse Spin");
+                    animator.SetTrigger("BoardSpin");
                     ExecuteMove(0.2f, 0);
                     break;
                 default:
