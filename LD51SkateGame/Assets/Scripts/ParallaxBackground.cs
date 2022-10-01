@@ -8,7 +8,9 @@ public class ParallaxBackground : MonoBehaviour
     private Transform camTrans;
     [SerializeField] private Vector2 parallaxMult;
     private float textureSizeX;
-    
+    private float defaultY;
+    private float lastPlayerPosY;
+
     void Start()
     {
         pc = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerControler>();
@@ -16,26 +18,32 @@ public class ParallaxBackground : MonoBehaviour
         Sprite sprite = GetComponent<SpriteRenderer>().sprite;
         Texture2D texture = sprite.texture;
         textureSizeX = texture.width / sprite.pixelsPerUnit;
+        defaultY = this.transform.localPosition.y;
     }
 
     void Update()
     {
+        // Parallax movement
         var xmov = 0f;
         var ymov = 0f;
         if (pc.curSpeed > 0.1)
             xmov = -(pc.curSpeed * Time.deltaTime);
-        if (pc.curJump < -0.1 || pc.curJump > 0.1)
-        {
-            var diff = ((pc.jumpVel) - (pc.gravity))/2;
-            ymov = -(diff * Time.deltaTime);
-        }
+        ymov = pc.gameObject.transform.position.y - lastPlayerPosY;
 
-        transform.position += new Vector3(xmov * parallaxMult.x, ymov * parallaxMult.y, 0);
+        transform.position += new Vector3(xmov * parallaxMult.x, -ymov * parallaxMult.y, 0);
+        lastPlayerPosY = pc.gameObject.transform.position.y;
 
-        if(camTrans.position.x - transform.position.x >= textureSizeX)
+        // Screen wrapping
+        if (camTrans.position.x - transform.position.x >= textureSizeX)
         {
             float offsetX = (camTrans.position.x - transform.position.x) % textureSizeX;
             transform.position = new Vector3(camTrans.position.x + offsetX, transform.position.y);
+        }
+
+        // Make sure it dosn't drift down
+        if (pc.curJump <= 0.1)
+        {
+            transform.position = new Vector3(transform.position.x, defaultY, 0);
         }
     }
 }

@@ -6,6 +6,8 @@ public class PlayerControler : MonoBehaviour
 {
     [Header("Components")]
     [SerializeField] private GameObject spriteObj;
+    [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private float yOffset;
 
     [Header("Inputs")]
     [SerializeField] private float inputBuffer;
@@ -16,6 +18,11 @@ public class PlayerControler : MonoBehaviour
 
     [Header("Attributes")]
     [SerializeField] private bool grounded;
+    [SerializeField] private bool hitRail;
+    public bool onRail;
+    [SerializeField] private bool hitObs;
+    [SerializeField] private float hitbuffer;
+    [SerializeField] private float hitTimer;
     [SerializeField] private float topSpeed;
     [SerializeField] private float drag;
     [SerializeField] private float topJump;
@@ -37,59 +44,142 @@ public class PlayerControler : MonoBehaviour
                 inputBufferTimer = 0;
             }
         }
-        
+
+        // If hit an obsticle stop whatever was happening and give chance to boost
+        if (hitObs)
+        {
+            inputHappening = false;
+            inputBufferTimer = 0;
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                Debug.Log("Boosted");
+                hitTimer = 0;
+                hitObs = false;
+                ExecuteMove(2, 13);
+            }
+        }
+        // If hit a rail stop whatever was happening and give chance grind
+        else if (hitRail && !onRail)
+        {
+            inputHappening = false;
+            inputBufferTimer = 0;
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                Debug.Log("Grind!");
+                onRail = true;
+                jumpVel = 0;
+            }
+        }
         // Input recording
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        else
         {
-            inputHappening = true;
-            inputs.Add('u');
-        }
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            inputHappening = true;
-            inputs.Add('d');
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            inputHappening = true;
-            inputs.Add('l');
-        }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            inputHappening = true;
-            inputs.Add('r');
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                inputHappening = true;
+                inputs.Add('u');
+            }
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                inputHappening = true;
+                inputs.Add('d');
+            }
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                inputHappening = true;
+                inputs.Add('l');
+            }
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                inputHappening = true;
+                inputs.Add('r');
+            }
         }
 
-        // Speed and Jump dampening
+        // Hit obsticle
+        if (hitObs)
+        {
+            sprite.color = Color.red;
+            if (hitTimer < hitbuffer) hitTimer += Time.deltaTime;
+            else
+            {
+                hitTimer = 0;
+                hitObs = false;
+                ExecuteMove(-10, 0);
+            }
+        } else if (sprite.color == Color.red)
+        {
+            sprite.color = Color.white;
+        }
+
+        // Speed
         if (curSpeed >= 0)
         {
             var adjustedDrag = (drag * (((topSpeed + 1) - curSpeed)/8));
             curSpeed -= adjustedDrag * Time.deltaTime;
         }
-        if (curJump > 0.1)
-        {
-            curJump -= gravity * Time.deltaTime;
-        } else
-        {
-            curJump = 0;
-        }
 
         // Jumping
-        if (jumpVel > 0)
+        if (!onRail)
         {
-            curJump += jumpVel * Time.deltaTime;
-            jumpVel -= gravity * Time.deltaTime;
+            if (curJump > 0.1)
+            {
+                curJump -= gravity * Time.deltaTime;
+            }
+            else
+            {
+                curJump = 0;
+            }
+
+            if (jumpVel > 0)
+            {
+                curJump += jumpVel * Time.deltaTime;
+                jumpVel -= gravity * Time.deltaTime;
+            }
+
+            this.transform.position = new Vector3(this.transform.position.x, yOffset + (curJump / 2), 0);
+        }else
+        {
+            Debug.Log("GRIND");
+            ExecuteMove(0.2f, 0);
         }
 
-        spriteObj.transform.localPosition = new Vector3(0, curJump/2, 0);
+        // Grounded test
         if (curJump <= 0.1)
         {
             grounded = true;
             jumpVel = 0;
         }
+        else if (onRail)
+        {
+            grounded = true;
+        }
         else
         {
             grounded = false;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "Obst")
+        {
+            hitObs = true;
+            Debug.Log("Hit obst");
+        }
+        else if (col.gameObject.tag == "Rail")
+        {
+            hitRail = true;
+            Debug.Log("Hit Rail");
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "Rail")
+        {
+            hitRail = false;
+            onRail = false;
+            Debug.Log("Left Rail");
         }
     }
 
