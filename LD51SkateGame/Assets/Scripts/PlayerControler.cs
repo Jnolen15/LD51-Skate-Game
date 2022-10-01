@@ -195,7 +195,34 @@ public class PlayerControler : MonoBehaviour
         }
 
         // Determine moves
-        if (grounded)
+        if (onRail)
+        {
+            switch (movelist)
+            {
+                case "dr":
+                    Debug.Log("Ollie");
+                    hitRail = false;
+                    onRail = false;
+                    Debug.Log("Left Rail");
+                    ExecuteMove(0, 13);
+                    break;
+                case "dl":
+                    Debug.Log("Nollie");
+                    hitRail = false;
+                    onRail = false;
+                    Debug.Log("Left Rail");
+                    ExecuteMove(0, 13);
+                    break;
+                default:
+                    Debug.Log("Fumbled");
+                    hitRail = false;
+                    onRail = false;
+                    Debug.Log("Left Rail");
+                    ExecuteMove(-5, 0);
+                    break;
+            }
+        }
+        else if (grounded)
         {
             switch (movelist)
             {
