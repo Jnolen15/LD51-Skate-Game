@@ -95,15 +95,15 @@ public class PlayerControler : MonoBehaviour
             {
                 case "d":
                     Debug.Log("Pushed");
-                    ExecuteMove(1, 0);
+                    ExecuteMove(3, 0);
                     break;
                 case "dr":
                     Debug.Log("Ollie");
-                    ExecuteMove(0, 2);
+                    ExecuteMove(-0.6f, 2);
                     break;
                 case "dl":
                     Debug.Log("Nollie");
-                    ExecuteMove(0, 2);
+                    ExecuteMove(-0.6f, 2);
                     break;
                 default:
                     Debug.Log("Fumbled");
@@ -133,9 +133,14 @@ public class PlayerControler : MonoBehaviour
 
     private void ExecuteMove(float speedInc, float jumpInc)
     {
+        // adjustspeed and jump
         if (curSpeed < topSpeed)
             curSpeed += speedInc;
         if (curJump < topJump)
             curJump += jumpInc;
+
+        // Make sure speed won't go negitive
+        if (curSpeed <= 0)
+            curSpeed = 0;
     }
 }
