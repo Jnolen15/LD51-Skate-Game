@@ -170,6 +170,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstacles:
   - {fileID: 9166788587823961590, guid: ec0be46087a7dc245afb6da0b68177a2, type: 3}
+  - {fileID: 3771891837186779983, guid: 658983e215b53d849bcd952b84426a1e, type: 3}
+  - {fileID: 2828101655905621535, guid: b52a106153a1d6942a6e6fff4a4235ec, type: 3}
+  - {fileID: 4873021681812286631, guid: 9f94e401dbe4211468ea7e8025effbc6, type: 3}
   spawnPos: {fileID: 1498438421}
   spawnInterval: 50
   spawnTimer: 0
