@@ -22,6 +22,8 @@ public class PlayerControler : MonoBehaviour
     [SerializeField] private bool hitRail;
     public bool onRail;
     [SerializeField] private bool hitObs;
+    [SerializeField] private bool boostInput;
+    [SerializeField] private float boostbuffer;
     [SerializeField] private float hitbuffer;
     [SerializeField] private float hitTimer;
     [SerializeField] private float topSpeed;
@@ -46,12 +48,36 @@ public class PlayerControler : MonoBehaviour
             }
         }
 
+        // Buffer to allow for easier boosting off obsticles
+        if (boostbuffer > 0) boostbuffer -= Time.deltaTime;
+        else
+        {
+            boostInput = false;
+            boostbuffer = 0;
+        }
+
+        // Boost input buffer
+        if (!grounded && (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)))
+        {
+            boostbuffer = 0.4f;
+            boostInput = true;
+        }
         // If hit an obsticle stop whatever was happening and give chance to boost
         if (hitObs)
         {
-            inputHappening = false;
-            inputBufferTimer = 0;
-            if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
+            //inputHappening = false;
+            //inputBufferTimer = 0;
+            if (boostInput)
+            {
+                boostInput = false;
+                boostbuffer = 0;
+                Debug.Log("Boosted");
+                hitTimer = 0;
+                hitObs = false;
+                jumpVel = 0;
+                ExecuteMove(2, 13);
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
             {
                 Debug.Log("Boosted");
                 hitTimer = 0;
@@ -288,7 +314,7 @@ public class PlayerControler : MonoBehaviour
             {
 
                 case "d":
-                    Debug.Log("nothing");
+                    Debug.Log("Nothin");
                     break;
                 case "rl":
                     Debug.Log("Spin");
