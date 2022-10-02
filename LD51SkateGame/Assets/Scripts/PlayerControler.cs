@@ -56,6 +56,7 @@ public class PlayerControler : MonoBehaviour
                 Debug.Log("Boosted");
                 hitTimer = 0;
                 hitObs = false;
+                jumpVel = 0;
                 ExecuteMove(2, 13);
             }
         }
@@ -105,6 +106,7 @@ public class PlayerControler : MonoBehaviour
             {
                 hitTimer = 0;
                 hitObs = false;
+                animator.SetTrigger("Fumble");
                 ExecuteMove(-10, 0);
             }
         } else if (sprite.color == Color.red)

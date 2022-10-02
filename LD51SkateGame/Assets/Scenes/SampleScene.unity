@@ -169,12 +169,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstacles:
-  - {fileID: 9166788587823961590, guid: ec0be46087a7dc245afb6da0b68177a2, type: 3}
+  - {fileID: 428547561759331640, guid: 275c7e5497fd42e4a8d101e20aba5a1f, type: 3}
+  - {fileID: 3233331576366814143, guid: 2f27c38d0cf5ce34d8ef9d7778de926c, type: 3}
+  - {fileID: 6637485366880544719, guid: 9598ad9f7d96181499203451383728d2, type: 3}
   - {fileID: 3771891837186779983, guid: 658983e215b53d849bcd952b84426a1e, type: 3}
   - {fileID: 2828101655905621535, guid: b52a106153a1d6942a6e6fff4a4235ec, type: 3}
+  - {fileID: 4009701597387891060, guid: bb19cd1c47970534984ee0448cba7ab8, type: 3}
   - {fileID: 4873021681812286631, guid: 9f94e401dbe4211468ea7e8025effbc6, type: 3}
+  - {fileID: 8380206709970475757, guid: 9f001ea31e76efd47b582b34581bcf46, type: 3}
+  - {fileID: 3311158567389121069, guid: 9e4ff44771045c642a09446c8df0ffcb, type: 3}
+  - {fileID: 2418466446877798850, guid: d4cbe10d7f8ed58448f85a153112b961, type: 3}
+  - {fileID: 6419855250868145236, guid: ecc71363b6c7de94ba443bf64ac27999, type: 3}
+  - {fileID: 8720153416411553129, guid: 0fa6144dbdffe50459b683cbe54c1c5a, type: 3}
+  - {fileID: 5432959165573651757, guid: 93156af87fd572f4f9f47c4484259b4a, type: 3}
   spawnPos: {fileID: 1498438421}
-  spawnInterval: 50
+  spawnInterval: 40
   spawnTimer: 0
 --- !u!1 &519420028
 GameObject:
@@ -690,7 +699,7 @@ MonoBehaviour:
   hitRail: 0
   onRail: 0
   hitObs: 0
-  hitbuffer: 0.1
+  hitbuffer: 0.15
   hitTimer: 0
   topSpeed: 12
   drag: 1
@@ -707,7 +716,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1328396349}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3, y: -4, z: 0}
+  m_LocalPosition: {x: -5.5, y: -4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
