@@ -372,4 +372,12 @@ public class PlayerControler : MonoBehaviour
         if (curSpeed <= 0)
             curSpeed = 0;
     }
+
+    public void Explode()
+    {
+        curSpeed = 0;
+        gravity = 0;
+        jumpVel = 0;
+        this.gameObject.SetActive(false);
+    }
 }
