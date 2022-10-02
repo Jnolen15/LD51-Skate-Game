@@ -6,6 +6,7 @@ using TMPro;
 public class Score : MonoBehaviour
 {
     public PlayerControler pc;
+    public UIScript uiScript;
     public TextMeshProUGUI moveText;
     public TextMeshProUGUI comboText;
     public TextMeshProUGUI scoreText;
@@ -17,6 +18,7 @@ public class Score : MonoBehaviour
     [SerializeField] private int combo;
     [SerializeField] private int comboScore;
     [SerializeField] private List<string> combolist = new List<string>();
+    [SerializeField] private List<string> movelist = new List<string>();
 
     // Bomb timer will increase top speed
 
@@ -53,6 +55,7 @@ public class Score : MonoBehaviour
     public void AddScore(int points, string moveName)
     {
         moveText.text = moveName;
+        movelist.Add(moveName);
 
         // If the move is new to this combo add it to the list
         if (!combolist.Contains(moveName) && points > 0)
@@ -78,53 +81,69 @@ public class Score : MonoBehaviour
 
     private void EndCombo()
     {
-        // Combo bonus
-        var bonus = combo * 0.1f;
-        var comboPoints = (int)(comboScore * bonus);
-        Debug.Log("Combo score: " + comboScore + " bonus ponts: " + comboPoints);
-        score += comboPoints;
-        comboText.text = (combo + "X Combo + " + bonus + "%");
-
-        // Style bonus (# of Different tricks per combo)
-        switch (combolist.Count)
+        if(combo != 0)
         {
-            case (1):
-                score += 10;
-                Debug.Log("+" + 10 + " style points!");
-                break;
-            case (2):
-                score += 50;
-                Debug.Log("+" + 50 + " style points!");
-                break;
-            case (3):
-                score += 250;
-                Debug.Log("+" + 250 + " style points!");
-                break;
-            case (4):
-                score += 1000;
-                Debug.Log("+" + 1000 + " style points!");
-                break;
-            case (5):
-                score += 5000;
-                Debug.Log("+" + 5000 + " style points!");
-                break;
-            case (6):
-                score += 10000;
-                Debug.Log("+" + 10000 + " style points!");
-                break;
-            case (7): // Dont think its possible but just in case
-                score += 10000;
-                Debug.Log("+" + 10000 + " style points!");
-                break;
-            case (8): // Dont think its possible but just in case
-                score += 10000;
-                Debug.Log("+" + 10000 + " style points!");
-                break;
+            uiScript.ClearComboList();
+
+            // Combo bonus
+            var bonus = combo * 0.1f;
+            var comboPoints = (int)(comboScore * bonus);
+            Debug.Log("Combo score: " + comboScore + " bonus ponts: " + comboPoints);
+            score += comboPoints;
+            comboText.text = (combo + "X Combo + " + bonus + "%");
+            uiScript.AddToComboList("Combo bonus " + comboPoints);
+
+            // Style bonus (# of Different tricks per combo)
+            switch (combolist.Count)
+            {
+                case (1):
+                    score += 10;
+                    uiScript.AddToComboList("+" + 10 + " style points!");
+                    Debug.Log("+" + 10 + " style points!");
+                    break;
+                case (2):
+                    score += 50;
+                    uiScript.AddToComboList("+" + 50 + " style points!");
+                    Debug.Log("+" + 50 + " style points!");
+                    break;
+                case (3):
+                    score += 250;
+                    uiScript.AddToComboList("+" + 250 + " style points!");
+                    Debug.Log("+" + 250 + " style points!");
+                    break;
+                case (4):
+                    score += 1000;
+                    uiScript.AddToComboList("+" + 1000 + " style points!");
+                    Debug.Log("+" + 1000 + " style points!");
+                    break;
+                case (5):
+                    score += 5000;
+                    uiScript.AddToComboList("+" + 5000 + " style points!");
+                    Debug.Log("+" + 5000 + " style points!");
+                    break;
+                case (6):
+                    score += 10000;
+                    uiScript.AddToComboList("+" + 10000 + " style points!");
+                    Debug.Log("+" + 10000 + " style points!");
+                    break;
+                case (7): // Dont think its possible but just in case
+                    score += 10000;
+                    uiScript.AddToComboList("+" + 10000 + " style points!");
+                    Debug.Log("+" + 10000 + " style points!");
+                    break;
+                case (8): // Dont think its possible but just in case
+                    score += 10000;
+                    uiScript.AddToComboList("+" + 10000 + " style points!");
+                    Debug.Log("+" + 10000 + " style points!");
+                    break;
+            }
+
+            uiScript.AddMovesToComboList(movelist);
         }
-        Debug.Log(combolist.ToString());
 
         combo = 0;
         comboScore = 0;
         combolist.Clear();
+        movelist.Clear();
     }
 }
