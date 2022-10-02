@@ -8,6 +8,7 @@ public class PlayerControler : MonoBehaviour
     [SerializeField] private GameObject spriteObj;
     [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private Animator animator;
+    [SerializeField] private Score scoreKeeper;
     [SerializeField] private float yOffset;
 
     [Header("Inputs")]
@@ -18,14 +19,15 @@ public class PlayerControler : MonoBehaviour
     private List<char> inputs = new List<char>();
 
     [Header("Attributes")]
-    [SerializeField] private bool grounded;
-    [SerializeField] private bool hitRail;
+    public bool grounded;
     public bool onRail;
+    [SerializeField] private bool hitRail;
     [SerializeField] private bool hitObs;
     [SerializeField] private bool boostInput;
     [SerializeField] private float boostbuffer;
     [SerializeField] private float hitbuffer;
     [SerializeField] private float hitTimer;
+    [SerializeField] private float grindCD;
     [SerializeField] private float topSpeed;
     [SerializeField] private float drag;
     [SerializeField] private float topJump;
@@ -75,7 +77,7 @@ public class PlayerControler : MonoBehaviour
                 hitTimer = 0;
                 hitObs = false;
                 jumpVel = 0;
-                ExecuteMove(2, 13);
+                ExecuteMove(2, 13, 50, "Boosted");
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
             {
@@ -83,7 +85,7 @@ public class PlayerControler : MonoBehaviour
                 hitTimer = 0;
                 hitObs = false;
                 jumpVel = 0;
-                ExecuteMove(2, 13);
+                ExecuteMove(2, 13, 50, "Boosted");
             }
         }
         // If hit a rail stop whatever was happening and give chance grind
@@ -96,6 +98,7 @@ public class PlayerControler : MonoBehaviour
                 Debug.Log("Grind!");
                 onRail = true;
                 jumpVel = 0;
+                grindCD = 0;
             }
         }
         // Input recording
@@ -133,7 +136,7 @@ public class PlayerControler : MonoBehaviour
                 hitTimer = 0;
                 hitObs = false;
                 animator.SetTrigger("Fumble");
-                ExecuteMove(-10, 0);
+                ExecuteMove(-10, 0, 0, "Fumble");
             }
         } else if (sprite.color == Color.red)
         {
@@ -181,8 +184,14 @@ public class PlayerControler : MonoBehaviour
             this.transform.position = new Vector3(this.transform.position.x, yOffset + (curJump / 2), 0);
         }else
         {
-            Debug.Log("GRIND");
-            ExecuteMove(0.2f, 0);
+            ExecuteMove(0.2f, 0, 0, "Grind Boost");
+            if (grindCD > 0) grindCD -= Time.deltaTime;
+            else
+            {
+                Debug.Log("GRIND");
+                ExecuteMove(0, 0, 25, "Goo Grind");
+                grindCD = 0.5f;
+            }
         }
 
         // Grounded test
@@ -251,32 +260,24 @@ public class PlayerControler : MonoBehaviour
                 case "d":
                     hitRail = false;
                     onRail = false;
-                    Debug.Log("Left Rail");
-                    ExecuteMove(2, 0);
+                    ExecuteMove(2, 0, 0, "Left Rail");
                     break;
                 case "dr":
-                    Debug.Log("Nollie");
                     hitRail = false;
                     onRail = false;
-                    Debug.Log("Left Rail");
                     animator.SetTrigger("Nollie");
-                    ExecuteMove(0, 13);
+                    ExecuteMove(0, 13, 150, "Un-Floop");
                     break;
                 case "dl":
-                    Debug.Log("Ollie");
                     hitRail = false;
                     onRail = false;
-                    Debug.Log("Left Rail");
                     animator.SetTrigger("Ollie");
-                    ExecuteMove(0, 13);
+                    ExecuteMove(0, 13, 150, "Floop");
                     break;
                 default:
-                    Debug.Log("Fumbled");
                     hitRail = false;
-                    onRail = false;
-                    Debug.Log("Left Rail");
                     animator.SetTrigger("Fumble");
-                    ExecuteMove(-5, 0);
+                    ExecuteMove(-5, 0, -10, "Fumble");
                     break;
             }
         }
@@ -286,24 +287,20 @@ public class PlayerControler : MonoBehaviour
             switch (movelist)
             {
                 case "d":
-                    Debug.Log("Pushed");
                     animator.SetTrigger("Push");
-                    ExecuteMove(3, 0);
+                    ExecuteMove(3, 0, 0, "Push");
                     break;
                 case "dr":
-                    Debug.Log("Nollie");
                     animator.SetTrigger("Nollie");
-                    ExecuteMove(0, 15);
+                    ExecuteMove(0, 15, 100, "Un-Floop");
                     break;
                 case "dl":
-                    Debug.Log("Ollie");
                     animator.SetTrigger("Ollie");
-                    ExecuteMove(0, 15);
+                    ExecuteMove(0, 15, 100, "Floop");
                     break;
                 default:
-                    Debug.Log("Fumbled");
                     animator.SetTrigger("Fumble");
-                    ExecuteMove(-5, 0);
+                    ExecuteMove(-5, 0, -10, "Fumble");
                     break;
             }
         } 
@@ -314,32 +311,26 @@ public class PlayerControler : MonoBehaviour
             {
 
                 case "d":
-                    Debug.Log("Nothin");
                     break;
                 case "rl":
-                    Debug.Log("Spin");
                     animator.SetTrigger("BoardSpin");
-                    ExecuteMove(0.2f, 0);
+                    ExecuteMove(0.2f, 0, 250, "Slime Spin");
                     break;
                 case "lr":
-                    Debug.Log("Inverse Spin");
                     animator.SetTrigger("BoardSpin");
-                    ExecuteMove(0.2f, 0);
+                    ExecuteMove(0.2f, 0, 250, "Slime Spin");
                     break;
                 case "du":
-                    Debug.Log("Flip");
                     animator.SetTrigger("BoardFlip");
-                    ExecuteMove(0.2f, 0);
+                    ExecuteMove(0.2f, 0, 250, "Freak Flip");
                     break;
                 case "ud":
-                    Debug.Log("Flip");
                     animator.SetTrigger("BoardFlip");
-                    ExecuteMove(0.2f, 0);
+                    ExecuteMove(0.2f, 0, 250, "Freak Flip");
                     break;
                 default:
-                    Debug.Log("Fumbled");
                     animator.SetTrigger("Fumble");
-                    ExecuteMove(-3, 0);
+                    ExecuteMove(-3, 0, -10, "Fumble");
                     break;
             }
         }
@@ -348,8 +339,10 @@ public class PlayerControler : MonoBehaviour
         inputs.Clear();
     }
 
-    private void ExecuteMove(float speedInc, float jumpInc)
+    private void ExecuteMove(float speedInc, float jumpInc, int numPoints, string moveName)
     {
+        //Debug.Log(moveName);
+
         // adjustspeed and jump
         if (curSpeed < topSpeed)
         {
@@ -370,6 +363,10 @@ public class PlayerControler : MonoBehaviour
             jumpVel += (jumpInc * (1 + curSpeed / 100));
             curJump += 0.2f;
         }
+
+        // Send to scoreKeeper
+        if(numPoints != 0)
+            scoreKeeper.AddScore(numPoints, moveName);
 
         // Make sure speed won't go negitive
         if (curSpeed <= 0)
