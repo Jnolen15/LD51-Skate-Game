@@ -229,19 +229,19 @@ public class PlayerControler : MonoBehaviour
                     ExecuteMove(2, 0);
                     break;
                 case "dr":
-                    Debug.Log("Ollie");
-                    hitRail = false;
-                    onRail = false;
-                    Debug.Log("Left Rail");
-                    animator.SetTrigger("Ollie");
-                    ExecuteMove(0, 13);
-                    break;
-                case "dl":
                     Debug.Log("Nollie");
                     hitRail = false;
                     onRail = false;
                     Debug.Log("Left Rail");
                     animator.SetTrigger("Nollie");
+                    ExecuteMove(0, 13);
+                    break;
+                case "dl":
+                    Debug.Log("Ollie");
+                    hitRail = false;
+                    onRail = false;
+                    Debug.Log("Left Rail");
+                    animator.SetTrigger("Ollie");
                     ExecuteMove(0, 13);
                     break;
                 default:
@@ -265,13 +265,13 @@ public class PlayerControler : MonoBehaviour
                     ExecuteMove(3, 0);
                     break;
                 case "dr":
-                    Debug.Log("Ollie");
-                    animator.SetTrigger("Ollie");
+                    Debug.Log("Nollie");
+                    animator.SetTrigger("Nollie");
                     ExecuteMove(0, 15);
                     break;
                 case "dl":
-                    Debug.Log("Nollie");
-                    animator.SetTrigger("Nollie");
+                    Debug.Log("Ollie");
+                    animator.SetTrigger("Ollie");
                     ExecuteMove(0, 15);
                     break;
                 default:
