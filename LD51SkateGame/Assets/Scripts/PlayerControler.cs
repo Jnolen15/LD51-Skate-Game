@@ -215,6 +215,7 @@ public class PlayerControler : MonoBehaviour
         }
 
         // Determine moves
+        // On Rail
         if (onRail)
         {
             switch (movelist)
@@ -246,10 +247,12 @@ public class PlayerControler : MonoBehaviour
                     hitRail = false;
                     onRail = false;
                     Debug.Log("Left Rail");
+                    animator.SetTrigger("Fumble");
                     ExecuteMove(-5, 0);
                     break;
             }
         }
+        // On Ground
         else if (grounded)
         {
             switch (movelist)
@@ -271,10 +274,13 @@ public class PlayerControler : MonoBehaviour
                     break;
                 default:
                     Debug.Log("Fumbled");
+                    animator.SetTrigger("Fumble");
                     ExecuteMove(-5, 0);
                     break;
             }
-        } else
+        } 
+        // In air
+        else
         {
             switch (movelist)
             {
@@ -292,8 +298,19 @@ public class PlayerControler : MonoBehaviour
                     animator.SetTrigger("BoardSpin");
                     ExecuteMove(0.2f, 0);
                     break;
+                case "du":
+                    Debug.Log("Flip");
+                    animator.SetTrigger("BoardFlip");
+                    ExecuteMove(0.2f, 0);
+                    break;
+                case "ud":
+                    Debug.Log("Flip");
+                    animator.SetTrigger("BoardFlip");
+                    ExecuteMove(0.2f, 0);
+                    break;
                 default:
                     Debug.Log("Fumbled");
+                    animator.SetTrigger("Fumble");
                     ExecuteMove(-3, 0);
                     break;
             }
