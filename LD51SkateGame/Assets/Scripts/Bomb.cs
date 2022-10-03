@@ -7,6 +7,7 @@ using TMPro;
 public class Bomb : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI timer;
+    [SerializeField] TextMeshProUGUI bombScore;
     [SerializeField] Image bar;
 
     [SerializeField] GameObject player;
@@ -15,6 +16,7 @@ public class Bomb : MonoBehaviour
 
     [SerializeField] private int curBombScore;
     [SerializeField] private float bombTimer;
+    [SerializeField] private int prevScore;
 
     [SerializeField] private float test;
 
@@ -32,11 +34,14 @@ public class Bomb : MonoBehaviour
     {
         // Timer and Rad meter display Update
         timer.text = bombTimer.ToString("F2");
+        bombScore.text = ("Quota: " + curBombScore);
         var temp = (float)score.score;
-        bar.fillAmount = temp / curBombScore;
+        bar.fillAmount = (temp - prevScore) / (curBombScore - prevScore);
 
         // Bomb timer updating
-        if (bombTimer > 0) bombTimer -= Time.deltaTime;
+        if(score.score >= curBombScore)
+            ResetTimer();
+        else if (bombTimer > 0) bombTimer -= Time.deltaTime;
         else
         {
             if (score.score < curBombScore)
@@ -49,7 +54,8 @@ public class Bomb : MonoBehaviour
     private void ResetTimer()
     {
         bombTimer = 10;
-        curBombScore = (score.score + (int)(score.score * 0.2f));
+        prevScore = score.score;
+        curBombScore = (score.score + (int)(score.score * 0.4f));
     }
 
     private void Explode()

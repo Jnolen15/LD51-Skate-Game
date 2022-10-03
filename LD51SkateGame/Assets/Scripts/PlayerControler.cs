@@ -9,6 +9,7 @@ public class PlayerControler : MonoBehaviour
     [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private Animator animator;
     [SerializeField] private Score scoreKeeper;
+    [SerializeField] private GameObject splat;
     [SerializeField] private float yOffset;
 
     [Header("Inputs")]
@@ -375,6 +376,7 @@ public class PlayerControler : MonoBehaviour
 
     public void Explode()
     {
+        Instantiate(splat, transform.position, transform.rotation);
         curSpeed = 0;
         gravity = 0;
         jumpVel = 0;

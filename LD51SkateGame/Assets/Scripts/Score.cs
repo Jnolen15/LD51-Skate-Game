@@ -70,7 +70,7 @@ public class Score : MonoBehaviour
             comboScore += points;
             combo++;
             if (combo > 1)
-                comboText.text = (combo + "X Combo!");
+                comboText.text = (combo + "X");
         } else
         {
             score += points;
@@ -90,8 +90,8 @@ public class Score : MonoBehaviour
             var comboPoints = (int)(comboScore * bonus);
             Debug.Log("Combo score: " + comboScore + " bonus ponts: " + comboPoints);
             score += comboPoints;
-            comboText.text = (combo + "X Combo + " + bonus + "%");
-            uiScript.AddToComboList("Combo bonus " + comboPoints);
+            comboText.text = (combo + "X");
+            uiScript.AddToComboList("+" + comboPoints + " combo bonus!");
 
             // Style bonus (# of Different tricks per combo)
             switch (combolist.Count)
