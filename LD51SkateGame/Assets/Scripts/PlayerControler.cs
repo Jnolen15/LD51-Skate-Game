@@ -22,6 +22,7 @@ public class PlayerControler : MonoBehaviour
     [Header("Attributes")]
     public bool grounded;
     public bool onRail;
+    [SerializeField] private bool dead;
     [SerializeField] private bool hitRail;
     [SerializeField] private bool hitObs;
     [SerializeField] private bool boostInput;
@@ -376,10 +377,15 @@ public class PlayerControler : MonoBehaviour
 
     public void Explode()
     {
-        Instantiate(splat, transform.position, transform.rotation);
-        curSpeed = 0;
-        gravity = 0;
-        jumpVel = 0;
-        this.gameObject.SetActive(false);
+        if (!dead)
+        {
+            dead = true;
+            Instantiate(splat, transform.position, transform.rotation);
+            curSpeed = 0;
+            gravity = 0;
+            jumpVel = 0;
+            this.gameObject.SetActive(false);
+        }
+
     }
 }

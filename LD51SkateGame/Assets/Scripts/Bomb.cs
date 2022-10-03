@@ -6,6 +6,7 @@ using TMPro;
 
 public class Bomb : MonoBehaviour
 {
+    [SerializeField] GameObject endButton;
     [SerializeField] TextMeshProUGUI timer;
     [SerializeField] TextMeshProUGUI bombScore;
     [SerializeField] Image bar;
@@ -61,5 +62,6 @@ public class Bomb : MonoBehaviour
     private void Explode()
     {
         pc.Explode();
+        endButton.SetActive(true);
     }
 }
